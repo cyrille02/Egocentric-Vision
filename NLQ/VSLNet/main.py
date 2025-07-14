@@ -9,8 +9,8 @@ import torch
 import torch.nn as nn
 import submitit
 from torch.utils.tensorboard.writer import SummaryWriter
-from model.VSLNet import build_optimizer_and_scheduler, VSLNet
-from model.VSLBase import build_optimizer_and_scheduler, VSLBase
+from model.VSLNet import build_optimizer_and_scheduler as build_optimizer_and_scheduler_vslnet , VSLNet
+from model.VSLBase import build_optimizer_and_scheduler as build_optimizer_and_scheduler_vslbase, VSLBase
 from tqdm import tqdm
 from utils.data_gen import gen_or_load_dataset
 from utils.data_loader import get_test_loader, get_train_loader
@@ -103,11 +103,14 @@ def main(configs, parser):
             model = VSLNet(
                 configs=configs, word_vectors=dataset.get("word_vector", None)
             ).to(device)
+            optimizer, scheduler = build_optimizer_and_scheduler_vslnet(model, configs=configs)
+
         elif configs.model == "vslbase":
             model = VSLBase(
                 configs=configs, word_vectors=dataset.get("word_vector", None)
             ).to(device)
-        optimizer, scheduler = build_optimizer_and_scheduler(model, configs=configs)
+            optimizer, scheduler = build_optimizer_and_scheduler_vslbase(model, configs=configs)
+
         # start training
         best_metric = -1.0
         score_writer = open(
