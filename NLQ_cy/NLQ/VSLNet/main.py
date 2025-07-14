@@ -99,11 +99,11 @@ def main(configs, parser):
             save_pretty=True,
         )
         # build model
-        if argparse.model == "vslnet":
+        if configs.model == "vslnet":
             model = VSLNet(
                 configs=configs, word_vectors=dataset.get("word_vector", None)
             ).to(device)
-        elif argparse.model == "vslbase":
+        elif configs.model == "vslbase":
             model = VSLBase(
                 configs=configs, word_vectors=dataset.get("word_vector", None)
             ).to(device)
